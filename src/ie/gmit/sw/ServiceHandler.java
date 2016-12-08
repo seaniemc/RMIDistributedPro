@@ -1,6 +1,9 @@
 package ie.gmit.sw;
 
 import java.io.*;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -14,15 +17,24 @@ public class ServiceHandler extends HttpServlet {
 	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		StringService stringS;
 		resp.setContentType("text/html");
 		PrintWriter out = resp.getWriter();
+		
+		try {
+			stringS = (StringService) Naming.lookup("rmi://localhost:1099/MyStringCompareService");
+		} catch (NotBoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		//Initialise some request varuables with the submitted form info. These are local to this method and thread safe...
 		String algorithm = req.getParameter("cmbAlgorithm");
 		String s = req.getParameter("txtS");
 		String t = req.getParameter("txtT");
 		String taskNumber = req.getParameter("frmTaskNumber");
-
+		
+		
 
 		out.print("<html><head><title>Distributed Systems Assignment</title>");		
 		out.print("</head>");		

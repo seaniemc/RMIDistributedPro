@@ -15,7 +15,7 @@ public class StringServant {
         LocateRegistry.createRegistry(1099);
 
         //Bind our remote object to the registry with the human-readable name "howdayService"
-        Naming.rebind("My String Compare Service", mss);
+        Naming.rebind("MyStringCompareService", mss);
 
         //Print a nice message to standard output
         System.out.println("My String Compare Service is listening on port 1099.");
