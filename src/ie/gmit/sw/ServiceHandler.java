@@ -17,12 +17,12 @@ public class ServiceHandler extends HttpServlet {
 	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		StringService stringS;
+		StringService service = null;
 		resp.setContentType("text/html");
 		PrintWriter out = resp.getWriter();
 		
 		try {
-			stringS = (StringService) Naming.lookup("rmi://localhost:1099/MyStringCompareService");
+			service = (StringService) Naming.lookup("rmi://localhost:1099/MyStringCompareService");
 		} catch (NotBoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -44,6 +44,12 @@ public class ServiceHandler extends HttpServlet {
 			taskNumber = new String("T" + jobNumber);
 			jobNumber++;
 			//Add job to in-queue
+			Resultator rs;		
+			rs = service.compare(s, t, algorithm);
+			//rs.getResult();
+			System.out.println(rs.getResult());
+			
+			
 		}else{
 			//Check out-queue for finished job
 		}
@@ -74,6 +80,7 @@ public class ServiceHandler extends HttpServlet {
 		out.print("<LI>Return the result of the string comparison to the client next time a request for the jobNumber is received and the <i>Resultator</i> returns true for the method <i>isComplete().</i>");	
 		out.print("</OL>");	
 		
+		//put an if statement here to stop page refresh
 		out.print("<form name=\"frmRequestDetails\">");
 		out.print("<input name=\"cmbAlgorithm\" type=\"hidden\" value=\"" + algorithm + "\">");
 		out.print("<input name=\"txtS\" type=\"hidden\" value=\"" + s + "\">");
@@ -82,7 +89,7 @@ public class ServiceHandler extends HttpServlet {
 		out.print("</form>");								
 		out.print("</body>");	
 		out.print("</html>");	
-		
+		//this refreshes the page
 		out.print("<script>");
 		out.print("var wait=setTimeout(\"document.frmRequestDetails.submit();\", 10000);");
 		out.print("</script>");
