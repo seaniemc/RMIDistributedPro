@@ -30,8 +30,8 @@ public class ServiceHandler extends HttpServlet {
 		
 		//Initialise some request varuables with the submitted form info. These are local to this method and thread safe...
 		String algorithm = req.getParameter("cmbAlgorithm");
-		String s = req.getParameter("txtS");
-		String t = req.getParameter("txtT");
+		String str1 = req.getParameter("txtS");
+		String str2 = req.getParameter("txtT");
 		String taskNumber = req.getParameter("frmTaskNumber");
 		
 		
@@ -44,8 +44,11 @@ public class ServiceHandler extends HttpServlet {
 			taskNumber = new String("T" + jobNumber);
 			jobNumber++;
 			//Add job to in-queue
-			Resultator rs;		
-			rs = service.compare(s, t, algorithm);
+			//Request r = new Request(algorithm,str1,str2, taskNumber );
+			
+			Resultator rs ;
+			
+			rs = service.compare(str1, str2, algorithm);
 			//rs.getResult();
 			System.out.println(rs.getResult());
 			
@@ -62,8 +65,8 @@ public class ServiceHandler extends HttpServlet {
 		out.print("<font color=\"#993333\"><b>");
 		out.print("RMI Server is located at " + remoteHost);
 		out.print("<br>Algorithm: " + algorithm);		
-		out.print("<br>String <i>s</i> : " + s);
-		out.print("<br>String <i>t</i> : " + t);
+		out.print("<br>String <i>s</i> : " + str1);
+		out.print("<br>String <i>t</i> : " + str2);
 		out.print("<br>This servlet should only be responsible for handling client request and returning responses. Everything else should be handled by different objects.");
 		out.print("Note that any variables declared inside this doGet() method are thread safe. Anything defined at a class level is shared between HTTP requests.");				
 		out.print("</b></font>");
@@ -83,8 +86,8 @@ public class ServiceHandler extends HttpServlet {
 		//put an if statement here to stop page refresh
 		out.print("<form name=\"frmRequestDetails\">");
 		out.print("<input name=\"cmbAlgorithm\" type=\"hidden\" value=\"" + algorithm + "\">");
-		out.print("<input name=\"txtS\" type=\"hidden\" value=\"" + s + "\">");
-		out.print("<input name=\"txtT\" type=\"hidden\" value=\"" + t + "\">");
+		out.print("<input name=\"txtS\" type=\"hidden\" value=\"" + str1 + "\">");
+		out.print("<input name=\"txtT\" type=\"hidden\" value=\"" + str2 + "\">");
 		out.print("<input name=\"frmTaskNumber\" type=\"hidden\" value=\"" + taskNumber + "\">");
 		out.print("</form>");								
 		out.print("</body>");	

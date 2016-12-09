@@ -5,6 +5,7 @@ public class Request {
 	String str1;
 	String str2;
 	String taskNumber;
+	
 	public String getAlgorithim() {
 		return algorithim;
 	}
