@@ -6,6 +6,15 @@ public class Request {
 	String str2;
 	String taskNumber;
 	
+	public Request(String algorithim, String str1, String str2, String taskNumber) {
+		super();
+		this.algorithim = algorithim;
+		this.str1 = str1;
+		this.str2 = str2;
+		this.taskNumber = taskNumber;
+	}
+	
+	
 	public String getAlgorithim() {
 		return algorithim;
 	}
@@ -28,13 +37,6 @@ public class Request {
 		return taskNumber;
 	}
 	public void setTaskNumber(String taskNumber) {
-		this.taskNumber = taskNumber;
-	}
-	public Request(String algorithim, String str1, String str2, String taskNumber) {
-		super();
-		this.algorithim = algorithim;
-		this.str1 = str1;
-		this.str2 = str2;
 		this.taskNumber = taskNumber;
 	}
 	

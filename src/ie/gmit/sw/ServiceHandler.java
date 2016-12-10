@@ -3,9 +3,13 @@ package ie.gmit.sw;
 import java.io.*;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.servlet.*;
@@ -14,13 +18,23 @@ import javax.servlet.http.*;
 public class ServiceHandler extends HttpServlet {
 	private String remoteHost = null;
 	private static long jobNumber = 0;
+	private final int THREAD_POOL_SIZE = 6;
 	
 	private static Map<String, Resultator> outQueue; 
 	private static BlockingQueue<Request> inQueue;
-
+	private static ExecutorService executor ;
+	
+	private boolean checkProcessed;
+	private String returningDistance = "";
+	
 	public void init() throws ServletException {
 		ServletContext ctx = getServletContext();
 		remoteHost = ctx.getInitParameter("RMI_SERVER"); //Reads the value from the <context-param> in web.xml
+		
+		outQueue = new HashMap<String, Resultator>();
+		inQueue = new LinkedBlockingQueue<Request>();
+		executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+		
 	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -28,8 +42,6 @@ public class ServiceHandler extends HttpServlet {
 		resp.setContentType("text/html");
 		PrintWriter out = resp.getWriter();
 		
-		outQueue = new ConcurrentHashMap<String,Resultator>();
-		inQueue = new LinkedBlockingQueue<Request>();
 		
 		try {
 			service = (StringService) Naming.lookup("rmi://localhost:1099/MyStringCompareService");
@@ -52,22 +64,41 @@ public class ServiceHandler extends HttpServlet {
 		
 		if (taskNumber == null){
 			taskNumber = new String("T" + jobNumber);
-			jobNumber++;
-			//Add job to in-queue
+			
+			checkProcessed = false;
+
 			Request r = new Request(algorithm,str1,str2, taskNumber );
 			inQueue.add(r);
 			
-			//Resultator rs ;
+			//Resultator rs = new ResultatorIMPL();
 			
-			Worker work = new Worker(inQueue, outQueue, service);
+			Runnable work = new Worker(inQueue, outQueue, service);
+			executor.execute(work);
 			
-			//rs = service.compare(str1, str2, algorithm);
-			//rs.getResult();
-			//System.out.println(rs.getResult());
-			
-			
-		}else{
-			//Check out-queue for finished job
+			jobNumber++;
+		} else {
+			// ELSE - Check outQueue for finished job
+
+			// Get the Value associated with the current job number
+			if (outQueue.containsKey(taskNumber)) {
+				// Get the Resultator item from the MAP by Current taskNumber
+				Resultator outQItem = outQueue.get(taskNumber);
+
+				System.out.println("\nChecking Status of Task No:" + taskNumber);
+
+				checkProcessed = outQItem.isProcessed();
+
+				// Check to see if the Resultator Item is Processed
+				if (checkProcessed == true) {
+					// Remove the processed item from Map by taskNumber
+					outQueue.remove(taskNumber);
+					//Get the Distance of the Current Task
+					returningDistance = outQItem.getResult();
+
+					System.out.println("\nTask " + taskNumber + " Successfully Processed and Removed from OutQueue");
+					System.out.println("Distance Between String (" + str1 + ") and String (" + str2 + ") = " + returningDistance);
+				}
+			}
 		}
 		
 		

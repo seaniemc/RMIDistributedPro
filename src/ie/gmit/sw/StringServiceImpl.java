@@ -9,29 +9,30 @@ public class StringServiceImpl extends UnicastRemoteObject implements StringServ
 	//private RemoteMessage message;
 	
 	public StringServiceImpl()throws RemoteException{
-
+		super();
     }
 
     public Resultator compare(String s, String t, String algo) throws RemoteException {
     	//
     	Resultator r = new ResultatorIMPL();
-    	//StringCompare alg = null;
+    	
+    	
     	switch(algo)
     	{
 	    	case "Levenshtein Distance":
 				Levenshtein ll = new Levenshtein();	
 				r.setResult(ll.distance(s, t));
-				r.setProcessed();
+				//r.setProcessed();
 			case "Hamming Distance":
 				HammingDistance hd = new HammingDistance();
 				r.setResult(hd.distance(s, t));
-				r.setProcessed();
+				//r.setProcessed();
 			case "Damerau-Levenshtein Distance":
 				DamerauLevenshtein dl = new DamerauLevenshtein();
 				r.setResult(dl.distance(s, t));
-				r.setProcessed();
+				//r.setProcessed();
     	}
-    	
+    	r.setProcessed();
         return r;
     }
 }
