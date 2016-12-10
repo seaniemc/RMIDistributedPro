@@ -57,11 +57,13 @@ public class ServiceHandler extends HttpServlet {
 			Request r = new Request(algorithm,str1,str2, taskNumber );
 			inQueue.add(r);
 			
-			Resultator rs ;
+			//Resultator rs ;
 			
-			rs = service.compare(str1, str2, algorithm);
+			Worker work = new Worker(inQueue, outQueue, service);
+			
+			//rs = service.compare(str1, str2, algorithm);
 			//rs.getResult();
-			System.out.println(rs.getResult());
+			//System.out.println(rs.getResult());
 			
 			
 		}else{
