@@ -3,6 +3,10 @@ package ie.gmit.sw;
 import java.io.*;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -10,6 +14,9 @@ import javax.servlet.http.*;
 public class ServiceHandler extends HttpServlet {
 	private String remoteHost = null;
 	private static long jobNumber = 0;
+	
+	private static Map<String, Resultator> outQueue; 
+	private static BlockingQueue<Request> inQueue;
 
 	public void init() throws ServletException {
 		ServletContext ctx = getServletContext();
@@ -20,6 +27,9 @@ public class ServiceHandler extends HttpServlet {
 		StringService service = null;
 		resp.setContentType("text/html");
 		PrintWriter out = resp.getWriter();
+		
+		outQueue = new ConcurrentHashMap<String,Resultator>();
+		inQueue = new LinkedBlockingQueue<Request>();
 		
 		try {
 			service = (StringService) Naming.lookup("rmi://localhost:1099/MyStringCompareService");
@@ -44,7 +54,8 @@ public class ServiceHandler extends HttpServlet {
 			taskNumber = new String("T" + jobNumber);
 			jobNumber++;
 			//Add job to in-queue
-			//Request r = new Request(algorithm,str1,str2, taskNumber );
+			Request r = new Request(algorithm,str1,str2, taskNumber );
+			inQueue.add(r);
 			
 			Resultator rs ;
 			
