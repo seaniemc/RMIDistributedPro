@@ -18,7 +18,7 @@ import javax.servlet.http.*;
 public class ServiceHandler extends HttpServlet {
 	private String remoteHost = null;
 	private static long jobNumber = 0;
-	private final int THREAD_POOL_SIZE = 6;
+	private final int POOL_SIZE = 6;
 	
 	private static Map<String, Resultator> outQueue; 
 	private static BlockingQueue<Request> inQueue;
@@ -33,7 +33,7 @@ public class ServiceHandler extends HttpServlet {
 		
 		outQueue = new HashMap<String, Resultator>();
 		inQueue = new LinkedBlockingQueue<Request>();
-		executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+		executor = Executors.newFixedThreadPool(POOL_SIZE);
 		
 	}
 
@@ -70,18 +70,15 @@ public class ServiceHandler extends HttpServlet {
 			Request r = new Request(algorithm,str1,str2, taskNumber );
 			inQueue.add(r);
 			
-			//Resultator rs = new ResultatorIMPL();
 			
 			Runnable work = new Worker(inQueue, outQueue, service);
 			executor.execute(work);
 			
 			jobNumber++;
 		} else {
-			// ELSE - Check outQueue for finished job
-
-			// Get the Value associated with the current job number
+			
 			if (outQueue.containsKey(taskNumber)) {
-				// Get the Resultator item from the MAP by Current taskNumber
+				//get the Resultator object from outMap based on tasknumber
 				Resultator outQItem = outQueue.get(taskNumber);
 
 				System.out.println("\nChecking Status of Task No:" + taskNumber);
@@ -95,8 +92,8 @@ public class ServiceHandler extends HttpServlet {
 					//Get the Distance of the Current Task
 					returningDistance = outQItem.getResult();
 
-					System.out.println("\nTask " + taskNumber + " Successfully Processed and Removed from OutQueue");
-					System.out.println("Distance Between String (" + str1 + ") and String (" + str2 + ") = " + returningDistance);
+					System.out.println("\nTask " + taskNumber + " Processed");
+					System.out.println("String (" + str1 + ") and String (" + str2 + ") Distance = " + returningDistance);
 				}
 			}
 		}
