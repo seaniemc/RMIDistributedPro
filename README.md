@@ -1,8 +1,8 @@
 # RMI Distributed Systems ProJect
 
-Name: Sean McGrath.
-Id: G00316649.
-Module: Distributed Systems.
+Name: Sean McGrath.  
+Id: G00316649.  
+Module: Distributed Systems.  
 
 ##Introduction 
 The application uses the Java RMI framework to compare 2 strings. The application also incorpoates the use of Threads,
