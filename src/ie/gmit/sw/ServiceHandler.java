@@ -101,7 +101,9 @@ public class ServiceHandler extends HttpServlet {
 			}
 		}
 		
-		
+		out.print("<html><head><title>Distributed Systems Assignment</title>");		
+		out.print("</head>");		
+		out.print("<body>");
 		
 		out.print("<H1>Processing request for Job#: " + taskNumber + "</H1>");
 		out.print("<div id=\"r\"></div>");
@@ -111,21 +113,10 @@ public class ServiceHandler extends HttpServlet {
 		out.print("<br>Algorithm: " + algorithm);		
 		out.print("<br>String <i>s</i> : " + str1);
 		out.print("<br>String <i>t</i> : " + str2);
-		out.print("<br>This servlet should only be responsible for handling client request and returning responses. Everything else should be handled by different objects.");
-		out.print("Note that any variables declared inside this doGet() method are thread safe. Anything defined at a class level is shared between HTTP requests.");				
-		out.print("</b></font>");
-
-		out.print("<P> Next Steps:");	
-		out.print("<OL>");
-		out.print("<LI>Generate a big random number to use a a job number, or just increment a static long variable declared at a class level, e.g. jobNumber.");	
-		out.print("<LI>Create some type of an object from the request variables and jobNumber.");	
-		out.print("<LI>Add the message request object to a LinkedList or BlockingQueue (the IN-queue)");			
-		out.print("<LI>Return the jobNumber to the client web browser with a wait interval using <meta http-equiv=\"refresh\" content=\"10\">. The content=\"10\" will wait for 10s.");	
-		out.print("<LI>Have some process check the LinkedList or BlockingQueue for message requests.");	
-		out.print("<LI>Poll a message request from the front of the queue and make an RMI call to the String Comparison Service.");			
-		out.print("<LI>Get the <i>Resultator</i> (a stub that is returned IMMEDIATELY by the remote method) and add it to a Map (the OUT-queue) using the jobNumber as the key and the <i>Resultator</i> as a value.");	
-		out.print("<LI>Return the result of the string comparison to the client next time a request for the jobNumber is received and the <i>Resultator</i> returns true for the method <i>isComplete().</i>");	
-		out.print("</OL>");	
+		
+		if(returningDistance != null){
+			out.print("<br>Distance:  " + returningDistance);
+		}
 		
 		//put an if statement here to stop page refresh
 		out.print("<form name=\"frmRequestDetails\">");
